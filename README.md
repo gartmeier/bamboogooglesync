@@ -44,3 +44,12 @@ Options:
                              sdk/directory/v1/guides/delegation  [required]
   --help                     Show this message and exit.
 ```
+## SAM
+
+You can use the AWS Serverless Application Model (SAM) to deploy this to your account.
+
+> Please, install the [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-install.html).
+
+Specify an Amazon S3 Bucket for the upload with `export S3_BUCKET=<YOUR_BUCKET>`.
+
+Execute `make package` in the console. Which will package and upload the function to the bucket. You can then use the `packaged.yaml` to configure and deploy the stack in [AWS CloudFormation Console](https://console.aws.amazon.com/cloudformation).

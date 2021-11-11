@@ -10,12 +10,13 @@ google-api-python-client = "*"
 google-auth-httplib2 = "*"
 google-auth-oauthlib = "*"
 oauth2client = "*"
+boto3 = "*"
 
 [dev-packages]
 black = "*"
 
 [requires]
-python_version = "3"
+python_version = "3.9"
 
 [pipenv]
 allow_prereleases = true

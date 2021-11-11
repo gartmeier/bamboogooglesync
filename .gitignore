@@ -130,3 +130,7 @@ dmypy.json
 
 # google workspace credentials
 credentials.json
+
+# SAM
+.aws-sam/
+packaged.yaml

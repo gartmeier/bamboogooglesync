@@ -1,0 +1,104 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: General
+        Parameters:
+          - BambooSubdomain
+          - BambooApiKey
+          - GoogleAdminEmail
+          - GoogleCredentials
+  AWS::ServerlessRepo::Application:
+    Name: bamboogooglesync
+    Description: Helping you populate Google Workspace directly with your BambooHR employees.
+    Author: Joshua Gartmeier
+    SpdxLicenseId: GPL-2.0
+    Labels:
+      - serverless
+      - sso
+      - lambda
+      - bamboo
+      - google
+    HomePageUrl: https://github.com/torfeld6/bamboogooglesync
+    SemanticVersion: 0.1.0
+    SourceCodeUrl: https://github.com/torfeld6/bamboogooglesync/tree/main
+Parameters:
+  BambooSubdomain:
+    Type: String
+    Description: If you access BambooHR at https://mycompany.bamboohr.com, then the subdomain is "mycompany"
+    NoEcho: true
+  BambooApiKey:
+    Type: String
+    Description: "See: https://documentation.bamboohr.com/docs/getting-started"
+    NoEcho: true
+  GoogleCredentials:
+    Type: String
+    Description: Credentials to log into Google (content of credentials.json)
+    NoEcho: true
+  GoogleAdminEmail:
+    Type: String
+    Description: Google Admin email
+    NoEcho: true
+Resources:
+  BambooGoogleSyncFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: dist/
+      Handler: bamboogooglesync.lambda.handler
+      Runtime: python3.9
+      Timeout: 300
+      Environment:
+        Variables:
+          BAMBOO_SUBDOMAIN:
+            Ref: BambooSubdomainSecret
+          BAMBOO_API_KEY:
+            Ref: BambooApiKeySecret
+          GOOGLE_ADMIN:
+            Ref: GoogleAdminEmailSecret
+          GOOGLE_CREDENTIALS:
+            Ref: GoogleCredentialsSecret
+          IS_LAMBDA: true
+      Policies:
+        - Statement:
+            - Sid: SSMGetParameterPolicy
+              Effect: Allow
+              Action:
+                - secretsmanager:Get*
+              Resource:
+                - Ref: BambooSubdomainSecret
+                - Ref: BambooApiKeySecret
+                - Ref: GoogleAdminEmailSecret
+                - Ref: GoogleCredentialsSecret
+      Events:
+        SyncScheduledEvent:
+          Type: Schedule
+          Name: AWSSyncSchedule
+          Properties:
+            Enabled: true
+            Schedule: cron(0 2 * * ? *)
+  BambooSubdomainSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: BambooGoogleSyncBambooSubdomain
+      SecretString:
+        Ref: BambooSubdomain
+  BambooApiKeySecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: BambooGoogleSyncBambooApiKey
+      SecretString:
+        Ref: BambooApiKey
+  GoogleAdminEmailSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: BambooGoogleSyncGoogleAdminEmail
+      SecretString:
+        Ref: GoogleAdminEmail
+  GoogleCredentialsSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: BambooGoogleSyncGoogleCredentials
+      SecretString:
+        Ref: GoogleCredentials

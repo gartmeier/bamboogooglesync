@@ -17,7 +17,7 @@ bamboo_api_key = click.option(
 google_admin = click.option(
     "--google-admin",
     envvar="GOOGLE_ADMIN",
-    help="Google Workspace admin user email.",
+    help="Google Workspace admin user email. See: https://developers.google.com/admin-sdk/directory/v1/guides/delegation",
     required=True,
 )
 
@@ -26,6 +26,6 @@ google_credentials = click.option(
     default="credentials.json",
     envvar="GOOGLE_CREDENTIALS",
     type=click.Path(dir_okay=False),
-    help="Path to Google Workspace credentials file.",
+    help="Path to Google Workspace credentials.json. See: https://developers.google.com/admin-sdk/directory/v1/guides/delegation",
     required=True,
 )

@@ -11,7 +11,8 @@ class Secret(click.ParamType):
         self.type = type
         
     def convert(self, value, param, ctx):
-        if os.environ.get("IS_LAMBDA"):
+        if os.environ.get("IS_LAMBDA") != "false":
+            print(value)
             client = boto3.client(
                 'secretsmanager'
             )

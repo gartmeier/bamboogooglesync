@@ -46,7 +46,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: dist/
-      Handler: bamboogooglesync.lambda.handler
+      Handler: bamboogooglesync.app.lambda_handler
       Runtime: python3.9
       Timeout: 300
       Environment:

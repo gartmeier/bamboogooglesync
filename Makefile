@@ -7,11 +7,11 @@ clean:
 	rm -rf dist
 	mkdir dist
 
-build: clean
+build: 
 	cp -r bamboogooglesync requirements.txt dist/
 	pip install -r requirements.txt --target dist/
 
-package: build
+package: clean build
 	sam package --template-file $(TEMPLATE) --s3-bucket $(S3_BUCKET) --output-template-file $(PACKAGED_TEMPLATE)
 
 deploy: package

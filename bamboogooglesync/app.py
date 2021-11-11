@@ -9,7 +9,12 @@ from .google import create_directory_service
 from .options import *
 
 
-@click.command()
+@click.group()
+def cli(*args, **kwargs):
+    pass
+
+
+@cli.command()
 @bamboo_subdomain
 @bamboo_api_key
 @google_admin
@@ -40,7 +45,7 @@ def update(
             continue
 
 
-@click.command()
+@cli.command()
 @bamboo_subdomain
 @bamboo_api_key
 @google_admin
@@ -241,3 +246,7 @@ def echo_not_found_error(e):
 
 class NotFoundError(Exception):
     pass
+
+
+def handler(event, context):
+    sync()

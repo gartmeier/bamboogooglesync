@@ -14,12 +14,12 @@ def create_directory_service(user_email, google_credentials):
     Returns:
       Admin SDK directory service object.
     """
-    scopes=["https://www.googleapis.com/auth/admin.directory.user"]
-    
-    if os.environ.get('IS_LAMBDA', "false") != "false":
-      fn = ServiceAccountCredentials.from_json_keyfile_dict
+    scopes = ["https://www.googleapis.com/auth/admin.directory.user"]
+
+    if os.environ.get("IS_LAMBDA", "false") != "false":
+        fn = ServiceAccountCredentials.from_json_keyfile_dict
     else:
-      fn = ServiceAccountCredentials.from_json_keyfile_name
+        fn = ServiceAccountCredentials.from_json_keyfile_name
 
     credentials = fn(google_credentials, scopes=scopes)
     credentials = credentials.create_delegated(user_email)

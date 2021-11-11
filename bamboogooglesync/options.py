@@ -7,7 +7,7 @@ bamboo_subdomain = click.option(
     envvar="BAMBOO_SUBDOMAIN",
     help='If you access BambooHR at https://mycompany.bamboohr.com, then the subdomain is "mycompany".',
     required=True,
-    type=Secret()
+    type=Secret(),
 )
 
 bamboo_api_key = click.option(
@@ -15,7 +15,7 @@ bamboo_api_key = click.option(
     envvar="BAMBOO_API_KEY",
     help="See: https://documentation.bamboohr.com/docs/getting-started.",
     required=True,
-    type=Secret()
+    type=Secret(),
 )
 
 google_admin = click.option(
@@ -23,7 +23,7 @@ google_admin = click.option(
     envvar="GOOGLE_ADMIN",
     help="Google Workspace admin user email. See: https://developers.google.com/admin-sdk/directory/v1/guides/delegation",
     required=True,
-    type=Secret()
+    type=Secret(),
 )
 
 google_credentials = click.option(
@@ -32,5 +32,5 @@ google_credentials = click.option(
     envvar="GOOGLE_CREDENTIALS",
     help="Path to Google Workspace credentials.json. See: https://developers.google.com/admin-sdk/directory/v1/guides/delegation",
     required=True,
-    type=Secret()
+    type=Secret(),
 )

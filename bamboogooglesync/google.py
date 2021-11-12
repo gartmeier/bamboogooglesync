@@ -1,4 +1,3 @@
-import json
 import os
 
 from googleapiclient.discovery import build
@@ -16,10 +15,10 @@ def create_directory_service(user_email, google_credentials):
     """
     scopes = ["https://www.googleapis.com/auth/admin.directory.user"]
 
-    if os.environ.get("IS_LAMBDA", "false") == "true":
-        fn = ServiceAccountCredentials.from_json_keyfile_dict
-    else:
+    if os.path.isfile(google_credentials):
         fn = ServiceAccountCredentials.from_json_keyfile_name
+    else:
+        fn = ServiceAccountCredentials.from_json_keyfile_dict
 
     credentials = fn(google_credentials, scopes=scopes)
     credentials = credentials.create_delegated(user_email)

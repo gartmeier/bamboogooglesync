@@ -318,12 +318,12 @@ def _sync(bamboo_subdomain, bamboo_api_key, google_admin, google_credentials):
             echo_not_found_error(e)
             continue
 
-        delete_kwargs = {"userKey": user["id"]}
+        update_kwargs = {"userKey": user["id"], "body": {"suspended": True}}
         try:
-            g.users().delete(**delete_kwargs).execute()
-            click.echo({"type": "delete_user", **delete_kwargs})
+            g.users().update(**update_kwargs).execute()
+            click.echo({"type": "update_user", **update_kwargs})
         except HttpError as e:
-            echo_http_error(e, **delete_kwargs)
+            echo_http_error(e, **update_kwargs)
 
 
 def get_user_by_external_id(g, external_id):

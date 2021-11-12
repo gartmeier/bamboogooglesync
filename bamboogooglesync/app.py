@@ -36,7 +36,32 @@ def update(
         update_kwargs = {
             "userKey": employee["workEmail"],
             "body": {
-                "externalIds": [{"value": employee["id"], "type": "organization"}],
+                "primaryEmail": employee["workEmail"],
+                "name": {
+                    "givenName": employee["preferredName"] or employee["firstName"],
+                    "familyName": employee["lastName"],
+                },
+                "suspended": employee["status"] != "Active",
+                "emails": [
+                    {
+                        "address": employee["homeEmail"],
+                        "type": "home",
+                    },
+                    {
+                        "address": employee["workEmail"],
+                        "primary": True,
+                    },
+                ],
+                "relations": [
+                    {"value": employee["supervisorEmail"], "type": "manager"}
+                ],
+                "organizations": [
+                    {
+                        "title": employee["jobTitle"],
+                        "primary": True,
+                        "department": employee["department"],
+                    }
+                ],
                 "orgUnitPath": f'/{employee["department"]}',
             },
         }
@@ -160,6 +185,10 @@ def _sync(bamboo_subdomain, bamboo_api_key, google_admin, google_credentials):
         # TODO/BUG status is not returned for api key owner
         if user["primaryEmail"] == google_admin:
             employee["status"] = "Active"
+        
+        # disable unsuspending
+        if user["suspended"]:
+            continue
 
         update_kwargs = {
             "userKey": user["id"],

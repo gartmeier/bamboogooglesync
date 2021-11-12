@@ -16,7 +16,7 @@ def create_directory_service(user_email, google_credentials):
     """
     scopes = ["https://www.googleapis.com/auth/admin.directory.user"]
 
-    if os.environ.get("IS_LAMBDA", "false") != "false":
+    if os.environ.get("IS_LAMBDA", "false") == "true":
         fn = ServiceAccountCredentials.from_json_keyfile_dict
     else:
         fn = ServiceAccountCredentials.from_json_keyfile_name

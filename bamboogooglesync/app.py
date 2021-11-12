@@ -62,6 +62,7 @@ def update(
                         "department": employee["department"],
                     }
                 ],
+                "externalIds": [{"value": employee["id"], "type": "organization"}],
                 "orgUnitPath": f'/{employee["department"]}',
             },
         }
@@ -71,6 +72,83 @@ def update(
         except HttpError as e:
             echo_http_error(e, **update_kwargs)
             continue
+
+@cli.command()
+@bamboo_subdomain
+@bamboo_api_key
+@google_admin
+@google_credentials
+@click.argument('employee-id')
+def update_employee(
+    bamboo_subdomain,
+    bamboo_api_key,
+    google_admin,
+    google_credentials,
+    employee_id
+):
+    b = BambooSession(bamboo_subdomain, bamboo_api_key)
+    g = create_directory_service(google_admin, google_credentials)
+    
+    employee = b.get(
+        f"/employees/{employee_id}",
+        params={
+            "fields": ",".join(
+                [
+                    "workEmail",
+                    "preferredName",
+                    "firstName",
+                    "lastName",
+                    "status",
+                    "homeEmail",
+                    "jobTitle",
+                    "supervisorEmail",
+                    "department",
+                ]
+            )
+        },
+    )
+    
+    update_kwargs = {
+        "userKey": employee["workEmail"],
+        "body": {
+            "primaryEmail": employee["workEmail"],
+            "name": {
+                "givenName": employee["preferredName"] or employee["firstName"],
+                "familyName": employee["lastName"],
+            },
+            "suspended": employee["status"] != "Active",
+            "emails": [
+                {
+                    "address": employee["homeEmail"],
+                    "type": "home",
+                },
+                {
+                    "address": employee["workEmail"],
+                    "primary": True,
+                },
+            ],
+            "relations": [
+                {"value": employee["supervisorEmail"], "type": "manager"}
+            ],
+            "organizations": [
+                {
+                    "title": employee["jobTitle"],
+                    "primary": True,
+                    "department": employee["department"],
+                }
+            ],
+            "externalIds": [{"value": employee["id"], "type": "organization"}],
+            "orgUnitPath": f'/{employee["department"]}' if employee["department"] else "/",
+        },
+    }
+    try:
+        g.users().update(**update_kwargs).execute()
+        click.echo({"type": "update_user", **update_kwargs})
+    except HttpError as e:
+        echo_http_error(e, **update_kwargs)
+
+    
+    
 
 
 @cli.command()

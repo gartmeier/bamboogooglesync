@@ -15,6 +15,17 @@
             "envFile": "${workspaceFolder}/.env"
         },
         {
+            "name": "update-employee",
+            "type": "python",
+            "request": "launch",
+            "module": "bamboogooglesync",
+            "args": [
+                "update-employee",
+                "307"
+            ],
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
             "name": "sync",
             "type": "python",
             "request": "launch",
